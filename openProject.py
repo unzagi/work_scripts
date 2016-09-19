@@ -92,10 +92,21 @@ while x < 1:
     elif myChoice == ("6") :
         import re
         import subprocess
-        out = subprocess.check_output("mode", shell = True)
-        m = re.search('COM(.+?):', str(out)).group(1)
-        print("\nYour Com port is COM" + m)
-        
+        try:
+            out = subprocess.check_output("mode", shell = True)
+            m = re.search('COM(.+?):', str(out)).group(1)
+            comPort =(r"C:\putty.exe -serial com" + m)
+            print(comPort)
+            print("\nYour Com port is COM" + m)
+            print("Press a key to start putty")
+            myChoice = input()
+            import subprocess
+            os.system(r"C:\putty.exe -serial com6")
+            
+        except:
+            print("Error: COM port not connected or may already be in use. Press a key to continue")
+            myChoice = input()
+            
     elif myChoice == ("Q") :
         x += 1
         
