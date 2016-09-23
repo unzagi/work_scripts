@@ -1,8 +1,8 @@
 from netmiko import ConnectHandler
 
 cisco_ios = {
-    'device_type': 'cisco_ios',
-    'ip':   'csr01.id39077.cpe.ifl.net',
+    'device_type': 'juniper',
+    'ip':   'csr01.id76492.cpe.ifl.net',
     'username': 'sbrooks',
     'password': 'X7{}xiph',
     'verbose': False,

@@ -1,0 +1,9 @@
+                           ^
+unknown command.
+sbrooks@csr01.id76492.cpe> terminallength   0
+                           ^
+unknown command.
+
+sbrooks@csr01.id76492.cpe> show run
+                                ^
+syntax error, expecting <command>.

@@ -10,7 +10,7 @@ import os
 
 
 #Define the menu function
-def menu(): print("\n1. Day to Day applications\n2. Instant Messaging\n3. Network Applications\n4. Project Files\n5. Run RMI\n6. Check what COM port is connected\nPress Q to quit")
+def menu(): print("\n1. Day to Day applications\n2. Instant Messaging\n3. Network Applications\n4. Project Files\n5. Run RMI\n6. Check what COM port is connected\n7.JTAC Reccomended SRX\nPress Q to quit")
 x = 0
 
 while x < 1:
@@ -88,6 +88,7 @@ while x < 1:
     elif myChoice == ("5") :
         #Open up specific files
         import firefoxrmi
+        
 
     elif myChoice == ("6") :
         import re
@@ -95,18 +96,22 @@ while x < 1:
         try:
             out = subprocess.check_output("mode", shell = True)
             m = re.search('COM(.+?):', str(out)).group(1)
-            comPort =(r"C:\putty.exe -serial com" + m)
+            comPort =('C:\putty.exe -serial com' + m)
             print(comPort)
             print("\nYour Com port is COM" + m)
             print("Press a key to start putty")
+            run = 'C:\\putty.exe -serial com' + m
+            print(run)
             myChoice = input()
             import subprocess
-            os.system(r"C:\putty.exe -serial com6")
+            os.system(str(run))
             
         except:
             print("Error: COM port not connected or may already be in use. Press a key to continue")
             myChoice = input()
-            
+
+    elif myChoice == ("7") :
+        import juniper_jtac_rec_scrape
     elif myChoice == ("Q") :
         x += 1
         

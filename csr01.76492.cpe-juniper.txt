@@ -1,0 +1,415 @@
+
+## Last commit: 2015-08-07 02:56:12 BST by nai
+version 12.1X44-D40.2;
+system {
+    host-name csr01.id76492.cpe;
+    time-zone Europe/London;
+    authentication-order [ tacplus password ];
+    ports {
+        console {
+            log-out-on-disconnect;
+            insecure;
+        }
+    }
+    root-authentication {
+        encrypted-password "$1$3TZNMNBJ$9y2wqL6GTeZHlTuUy9LBQ0"; ## SECRET-DATA
+    }
+    name-server {
+        62.171.194.104;
+        62.171.194.105;
+    }
+    tacplus-server {
+        194.238.49.99 {
+            port 49;
+            secret "$9$d.bs4UDk.fzikRhSr8LoaZUqf"; ## SECRET-DATA
+            single-connection;
+            source-address 10.104.91.69;
+        }
+    }
+    tacplus-options {
+        service-name junos-exec;
+        exclude-cmd-attribute;
+    }
+    accounting {
+        events [ login interactive-commands ];
+        destination {
+            tacplus {
+                server {
+                    194.238.49.99 {
+                        port 49;
+                        secret "$9$M3hXxNZGiP5QBIrKWXdVP5Q3nC"; ## SECRET-DATA
+                        single-connection;
+                    }
+                }
+            }
+        }
+    }
+    login {
+        message "\nAny unauthorised attempt to connect to, reconfigure\nor compromise this equipment is an offence under the\nComputer Misuse Act (1990). Any individual engaged\nin such activities will be liable to prosecution\nunder the said Act.\n\n";
+        retry-options {
+            tries-before-disconnect 3;
+        }
+        class remoteescalation {
+            permissions all;
+        }
+        class remotefirstline {
+            deny-commands .*;
+            deny-configuration .*;
+        }
+        class remotenoc {
+            permissions all;
+        }
+        class remotereadonly {
+            permissions [ secret view view-configuration ];
+        }
+        user admin {
+            full-name "Emergency Only Local Account";
+            uid 2010;
+            class super-user;
+            authentication {
+                encrypted-password "$1$.XyCiNTW$vcxMLeIDFbdGCCtILMmQy1"; ## SECRET-DATA
+            }
+        }
+        user remote {
+            full-name "Default remote";
+            uid 100;
+            class super-user;
+        }
+        user remote-escalation {
+            full-name "Escalation remote user";
+            uid 2000;
+            class remoteescalation;
+        }
+        user remote-first-line {
+            full-name "First Line remote user";
+            uid 2002;
+            class remotefirstline;
+        }
+        user remote-noc {
+            full-name "Engineer remote user";
+            uid 2001;
+            class remotenoc;
+        }
+        user remote-read-only {
+            full-name "Read-only remote user";
+            uid 2003;
+            class remotereadonly;
+        }
+    }
+    services {
+        ssh {
+            root-login deny;
+            protocol-version v2;
+            client-alive-interval 60;
+            connection-limit 3;
+            rate-limit 2;
+        }
+        web-management {
+            https {
+                system-generated-certificate;
+            }
+            session {
+                idle-timeout 5;
+                session-limit 3;
+            }
+        }
+    }
+    syslog {
+        file messages {
+            any warning;
+            authorization info;
+            archive size 1000000 files 10 world-readable;
+        }
+        file interactive-commands {
+            interactive-commands info;
+            match command;
+            archive size 1000000 files 10 world-readable;
+        }
+        file permitted-traffic {
+            any any;
+            match RT_FLOW_SESSION_CREATE;
+            archive size 1000000 files 10 world-readable;
+        }
+        file blocked-traffic {
+            any any;
+            match RT_FLOW_SESSION_DENY;
+            archive size 1000000 files 10 world-readable;
+        }
+        file interfaces {
+            any info;
+            match LINK;
+            archive size 1000000 files 10 world-readable;
+        }
+    }
+    ntp {
+        boot-server 62.171.194.100;
+        server 194.238.48.2 prefer;
+    }
+}
+chassis {
+    config-button no-rescue no-clear;
+}
+interfaces {
+    fe-0/0/0 {
+        unit 0 {
+            description "LAN - Curric";
+            family inet {
+                address 10.130.65.254/24;
+            }
+        }
+    }
+    fe-0/0/1 {
+        disable;
+    }
+    fe-0/0/2 {
+        disable;
+    }
+    fe-0/0/3 {
+        disable;
+    }
+    fe-0/0/4 {
+        disable;
+    }
+    fe-0/0/5 {
+        disable;
+    }
+    fe-0/0/6 {
+        disable;
+    }
+    fe-0/0/7 {
+        description WAN;
+        vlan-tagging;
+        unit 2054 {
+            description "acr02.th7.sxgfl.ifl.net via TalkTalk";
+            vlan-id 2054;
+            family inet {
+                address 10.104.102.108/31;
+            }
+        }
+        unit 2354 {
+            description "swi01.tc1.sxgfl.ifl.net via TalkTalk";
+            vlan-id 2354;
+            family inet {
+                address 10.104.104.108/31;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                filter {
+                    input MGMT-FILTER;
+                }
+                address 10.104.91.69/32;
+            }
+        }
+    }
+}
+snmp {
+    location 76492;
+    contact "iflsystems@ifl.net";
+    community swgfliflonly {
+        authorization read-only;
+        client-list-name MGMT-LIST;
+    }
+}
+routing-options {
+    autonomous-system 64100.264 asdot-notation;
+}
+protocols {
+    bgp {
+        precision-timers;
+        hold-time 30;
+        group RM {
+            type external;
+            import RM-IMPORT;
+            export [ RM-EXPORT static2ospf ];
+            multipath;
+            neighbor 10.104.102.109 {
+                authentication-key "$9$bh24JkqPfz3PfF/tpREvWLNwgDi.F695Q/tO1yr8X7VgJk.Pn9AQzlK8X-dfTz3CucSeKMXBI"; ## SECRET-DATA
+                peer-as 5503;
+            }
+            neighbor 10.104.104.109 {
+                authentication-key "$9$t15aO1EKv8LNd8L-wg4Dj5QF/pBylM-bsX7wgJGq.z36ABEKM8Vs27Nmfz39CLxNdYoHkPfT3ZU"; ## SECRET-DATA
+                peer-as 5503;
+            }
+        }
+    }
+    ospf {
+        export static2ospf;
+        area 0.0.8.57 {
+            nssa;
+            interface fe-0/0/7.2054 {
+                interface-type p2p;
+                priority 0;
+                authentication {
+                    md5 1 key "$9$nZX49A0RhSv8xrlZDkqQzlKvWNd"; ## SECRET-DATA
+                }
+            }
+            interface fe-0/0/7.2354 {
+                interface-type p2p;
+                priority 0;
+                authentication {
+                    md5 1 key "$9$oQZUHP5Q/AuF3v87NY236/CO1"; ## SECRET-DATA
+                }
+            }
+            interface lo0.0 {
+                passive;
+            }
+            interface fe-0/0/0.0 {
+                passive;
+            }
+        }
+    }
+}
+policy-options {
+    prefix-list MGMT-LIST {
+        62.171.194.96/27;
+        192.168.170.128/25;
+        192.168.170.190/32;
+        192.168.170.194/32;
+        194.238.49.0/24;
+        217.181.32.0/24;
+    }
+    policy-statement RM-EXPORT {
+        term INTERFACES {
+            from interface [ lo0.0 fe-0/0/7.2054 fe-0/0/7.2354 fe-0/0/0.0 ];
+            then accept;
+        }
+        then reject;
+    }
+    policy-statement RM-IMPORT {
+        term BGP-DEFAULT {
+            from {
+                protocol bgp;
+                route-filter 0.0.0.0/0 exact;
+            }
+            then accept;
+        }
+        then reject;
+    }
+    policy-statement static2ospf {
+        term T1 {
+            from protocol static;
+            then accept;
+        }
+    }
+}
+security {
+    address-book {
+        global {
+            address LAN-1-NET 10.130.65.0/24;
+        }
+    }
+    policies {
+        from-zone LAN to-zone WAN {
+            policy P1 {
+                match {
+                    source-address LAN-1-NET;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone WAN to-zone LAN {
+            policy P1 {
+                match {
+                    source-address any;
+                    destination-address LAN-1-NET;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        default-policy {
+            permit-all;
+        }
+    }
+    zones {
+        security-zone WAN {
+            interfaces {
+                fe-0/0/7.2054 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            ssh;
+                            https;
+                            snmp;
+                        }
+                        protocols {
+                            ospf;
+                        }
+                    }
+                }
+                fe-0/0/7.2354 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            ssh;
+                            https;
+                            snmp;
+                        }
+                        protocols {
+                            ospf;
+                        }
+                    }
+                }
+            }
+        }
+        security-zone LAN {
+            interfaces {
+                fe-0/0/0.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                        }
+                    }
+                }
+                lo0.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            ssh;
+                            https;
+                            http;
+                            snmp;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+firewall {
+    family inet {
+        filter MGMT-FILTER {
+            term T1 {
+                from {
+                    source-prefix-list {
+                        MGMT-LIST;
+                    }
+                    protocol [ tcp udp ];
+                    destination-port [ ssh https snmp ];
+                }
+                then accept;
+            }
+            term T2 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ ssh https snmp ];
+                }
+                then {
+                    discard;
+                }
+            }
+            term T3 {
+                then accept;
+            }
+        }
+    }
+}
