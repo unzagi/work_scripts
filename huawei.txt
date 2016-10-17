@@ -1,0 +1,141 @@
+[V200R005C32SPC200]
+#
+ board add 0/1 DSP5203 
+#
+ drop illegal-mac alarm
+#
+ipv6
+#
+ dns resolve  
+ dns proxy enable
+#
+vlan batch 70
+#
+dhcp enable
+#
+ ip accounting mismatched-threshold 1024
+#
+pki realm default
+ enrollment self-signed
+#
+ssl policy default_policy type server
+ pki-realm default
+#
+acl name GigabitEthernet0/0/4 2999  
+ rule 5 permit 
+#
+aaa 
+ authentication-scheme default 
+ authorization-scheme default 
+ accounting-scheme default 
+ domain default  
+ domain default_admin  
+ local-user admin password irreversible-cipher %#%#9wyQ~RXI+$5Ld{&!6Yv1hnK31%zwpS~!Tt*YoHCC0m-gDJ>mM,Q3B>;fF8;S%#%#
+ local-user admin privilege level 15
+ local-user admin service-type terminal ssh http
+#
+firewall zone Local
+ priority 16
+#
+ firewall defend syn-flood enable
+ firewall defend syn-flood zone Local max-rate 2500
+#
+ nat alg dns enable
+ nat alg ftp enable
+ nat alg rtsp enable
+ nat alg sip enable
+ nat alg pptp enable
+#
+interface Vlanif1
+ ip address 192.168.1.1 255.255.255.0
+ dhcp select interface
+ dhcp server dns-list 192.168.1.1 
+#
+interface Vlanif70
+ description V70
+ ip address 192.168.212.213 255.255.255.224
+#
+interface Ethernet0/0/0
+#
+interface GigabitEthernet0/0/0
+#
+interface GigabitEthernet0/0/1
+#
+interface GigabitEthernet0/0/2
+#
+interface GigabitEthernet0/0/3
+ port hybrid pvid vlan 70
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 70
+#
+interface GigabitEthernet0/0/4
+ tcp adjust-mss 1460
+ ip address 10.0.1.254 255.255.255.0
+ traffic-filter inbound acl 3999
+ nat outbound 2999 
+#
+interface Cellular0/0/0
+#
+interface Cellular0/0/1
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 9.9.9.9 255.255.255.255
+#
+bgp 600
+ peer 192.168.1.35 as-number 700
+ #
+ ipv4-family unicast
+  undo synchronization
+  network 9.0.0.0
+  network 9.9.9.9 255.255.255.255
+  peer 192.168.1.35 enable
+#
+ ftp server enable
+ set default ftp-directory flash:
+#
+ info-center timestamp log format-date
+#
+ snmp-agent local-engineid 800007DB036889C17C9BAB
+ snmp-agent community read %@%@.|Q{AZP~CDSL).0^_!$N,7o3Ch}RW7drD')!<T:ofJGM7o6,&~/nIc9OL"d&cq-#Dwb(o~,7%@%@ 
+ snmp-agent sys-info contact 135
+ snmp-agent sys-info location 135
+ snmp-agent sys-info version all
+ snmp-agent 
+#
+ sftp server enable 
+ stelnet server enable 
+ telnet server enable 
+#
+ http secure-server ssl-policy default_policy
+ http server enable
+ http secure-server enable
+#
+ip route-static 0.0.0.0 0.0.0.0 GigabitEthernet0/0/4 10.0.1.102
+ip route-static 10.102.0.0 255.255.128.0 Vlanif1 192.168.1.4
+#
+user-interface con 0
+ authentication-mode aaa
+user-interface vty 0
+ authentication-mode aaa
+ user privilege level 15
+user-interface vty 1 4
+ authentication-mode aaa
+#
+wlan
+ wmm-profile name wmmf id 0
+ traffic-profile name traf id 0
+ security-profile name secf id 0
+ radio-profile name radiof id 0
+  wmm-profile id 0
+ radio-profile name arwebradio id 1
+  wmm-profile id 0
+#
+interface Wlan-Radio0/0/0
+#
+voice 
+ #
+ diagnose
+#
+return
