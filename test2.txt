@@ -1,8 +1,0 @@
-Interface                      Status         Protocol Description
-Em0/0                          admin down     down     
-Gi0/0                          up             up       *** WAN Link via acr02.edge.th2.ifl.net - CAL0070167 ***
-Gi0/1                          up             up       Curriculum Network
-Gi0/2                          admin down     down     
-Lo0                            up             up       
-Lo10                           up             up       *** HA IP Address for NAGIOS Ping Check ***
-NV0                            up             up       

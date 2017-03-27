@@ -1,8 +1,0 @@
-Existing Template: JN46
-Template Type: SRX210HE2 + SRX-MP-1SFP-GE + EX-SFP-1GE-LX-C
-Telco: TTB  Ethernet - 10Gb NNI
-Circuit: EAD1000
-Bandwidth: 100-200Mbps
-Routing: BGP
-RM Customer: Core - C
-
