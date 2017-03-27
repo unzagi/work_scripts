@@ -1,3 +1,5 @@
+th 0
+csr01.id37470.cpe#show version
 Cisco IOS Software, 3800 Software (C3825-SPSERVICESK9-M), Version 12.4(24)T, RELEASE SOFTWARE (fc1)
 Technical Support: http://www.cisco.com/techsupport
 Copyright (c) 1986-2009 by Cisco Systems, Inc.
@@ -5,7 +7,7 @@ Compiled Wed 25-Feb-09 22:21 by prod_rel_team
 
 ROM: System Bootstrap, Version 12.3(11r)T2, RELEASE SOFTWARE (fc1)
 
-csr01.id37470.cpe uptime is 1 year, 13 weeks, 2 days, 3 hours, 58 minutes
+csr01.id37470.cpe uptime is 1 year, 13 weeks, 2 days, 3 hours, 45 minutes
 System returned to ROM by reload at 09:27:49 BST Mon Aug 10 2015
 System restarted at 09:29:30 BST Mon Aug 10 2015
 System image file is "flash:c3825-spservicesk9-mz.124-24.T.bin"

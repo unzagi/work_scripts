@@ -61,7 +61,7 @@ while x < 1:
             
         else:
             print("Starting Slack....\n")
-            os.startfile(r"C:\Users\sbrooks\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Slack Technologies\Slack.lnk")
+            os.startfile(r"C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Slack Technologies\Slack.lnk")
 
             
         if "UcMapi.exe" in tmp:     
